@@ -1,3 +1,3 @@
-module lesson15
+module github.com/Standartenfuhrer/simple-library
 
-go 1.21
+go 1.25.0

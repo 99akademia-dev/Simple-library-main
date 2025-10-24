@@ -3,68 +3,124 @@ package main
 import "fmt"
 
 func main() {
-	user1 := Reader{
-		ID:        1,
-		FirstName: "Агунда",
-		LastName:  "Абаева",
-		IsActive:  true,
+	fmt.Println("Запуск системы управления библиотекой...")
+
+	myLibrary := &Library{}
+
+	fmt.Println("\n--- Наполняем библиотеку ---")
+	
+	reader1, err := myLibrary.AddReader("Тамерлан", "Джигкаев")
+	if err != nil {
+		fmt.Printf("Ошибка при добавлении читателя: %v\n", err)
+		return
+	}
+	fmt.Printf("Зарегистрирован новый читатель: %s\n", reader1)
+
+	reader2, err := myLibrary.AddReader("Линда", "Элбакянц")
+	if err != nil {
+		fmt.Printf("Ошибка при добавлении читателя: %v\n", err)
+		return
+	}
+	fmt.Printf("Зарегистрирован новый читатель: %s\n", reader2)
+
+	book1, err := myLibrary.AddBook(1984, "1984", "Джордж Оруэлл")
+	if err != nil {
+		fmt.Printf("Ошибка при добавлении книги: %v\n", err)
+		return
+	}
+	fmt.Printf("Добавлена новая книга: %s\n", book1)
+
+	book2, err := myLibrary.AddBook(1967, "Мастер и Маргарита", "Михаил Булгаков")
+	if err != nil {
+		fmt.Printf("Ошибка при добавлении книги: %v\n", err)
+		return
+	}
+	fmt.Printf("Добавлена новая книга: %s\n", book2)
+
+	_, err = myLibrary.AddBook(1984, "1984", "Джордж Оруэлл")
+	if err != nil {
+		fmt.Printf("Ошибка при добавлении дубликата книги: %v\n", err)
 	}
 
-	user2 := Reader{
-		ID:        2,
-		FirstName: "Сергей",
-		LastName:  "Меняйло",
-		IsActive:  true,
-	}
-	book1 := Book{
-		ID:       1,
-		Title:    "Преступление и наказание",
-		Author:   "Федор Достоевский",
-		Year:     1866,
-		IsIssued: false,
-	}
+	fmt.Println("\n--- Библиотека готова к работе ---")
+	fmt.Printf("Количество читателей: %d\n", myLibrary.GetReadersCount())
+	fmt.Printf("Количество книг: %d\n", myLibrary.GetBooksCount())
 
-	book2 := Book{
-		ID:       2,
-		Title:    "Война и мир",
-		Author:   "Лев Толстой",
-		Year:     1869,
-		IsIssued: false,
+	fmt.Println("\n=== СЦЕНАРИИ ИСПОЛЬЗОВАНИЯ ===")
+
+	fmt.Println("\n1. Успешная выдача книги:")
+	err = myLibrary.IssueBookToReader(1, 1)
+	if err != nil {
+		fmt.Printf("Ошибка выдачи книги: %v\n", err)
+	} else {
+		fmt.Println("Книга успешно выдана читателю")
+
+		book, _ := myLibrary.FindBookById(1)
+		if book != nil {
+			fmt.Printf("Статус книги после выдачи: %s\n", book)
+		}
 	}
 
-	library := NewLibrary()
-	library.AddBook(&book1)
-	library.AddBook(&book2)
-	library.AddReader(&user1)
-	library.AddReader(&user2)
+	fmt.Println("\n2. Попытка выдать уже выданную книгу:")
+	err = myLibrary.IssueBookToReader(1, 2)
+	if err != nil {
+		fmt.Printf("Ошибка выдачи книги: %v\n", err)
+	} else {
+		fmt.Println("Книга успешно выдана")
+	}
 
-	fmt.Println("=== Демонстрация работы библиотеки ===")
-	fmt.Printf("Книга 1: %s\n", book1.String())
-	fmt.Printf("Книга 2: %s\n", book2.String())
-	fmt.Printf("Статус выдачи книг: %t, %t\n", book1.IsIssued, book2.IsIssued)
-	fmt.Println("\n--- Выдача книги активному читателю ---")
-	book1.IssueBook(&user1)
-	fmt.Printf("Статус книги после выдачи: %s\n", book1.String())
-	fmt.Println("\n--- Попытка выдать уже выданную книгу ---")
-	book1.IssueBook(&user2)
-	fmt.Println("\n--- Выдача второй книги другому читателю ---")
-	book2.IssueBook(&user2)
-	fmt.Printf("Статус книги после выдачи: %s\n", book2.String())
-	fmt.Println("\n--- Возврат книги ---")
-	book1.ReturnBook()
-	fmt.Printf("Статус книги после возврата: %s\n", book1.String())
-	fmt.Println("\n--- Выдача книги неактивному читателю ---")
-	user1.Deactivate()
-	book1.IssueBook(&user1)
-	fmt.Println("\n--- Выдача книги после активации ---")
-	user1.Activate()
-	book1.IssueBook(&user1)
-	fmt.Println("\n--- Информация о читателях ---")
-	fmt.Println(user1.String())
-	fmt.Println(user2.String())
-	fmt.Println("\n--- Демонстрация метода AssignBook ---")
-	user2.AssignBook(&book2)
-	fmt.Println("\n--- Финальный статус всех книг ---")
-	fmt.Printf("Книга 1: %s\n", book1.String())
-	fmt.Printf("Книга 2: %s\n", book2.String())
+	fmt.Println("\n3. Попытка выдать книгу несуществующему читателю:")
+	err = myLibrary.IssueBookToReader(2, 999)
+	if err != nil {
+		fmt.Printf("Ошибка выдачи книги: %v\n", err)
+	} else {
+		fmt.Println("Книга успешно выдана")
+	}
+	fmt.Println("\n4. Успешный возврат книги:")
+	err = myLibrary.ReturnBook(1)
+	if err != nil {
+		fmt.Printf("Ошибка возврата книги: %v\n", err)
+	} else {
+		fmt.Println("Книга успешно возвращена в библиотеку")
+		
+		book, _ := myLibrary.FindBookById(1)
+		if book != nil {
+			fmt.Printf("Статус книги после возврата: %s\n", book)
+		}
+	}
+
+	fmt.Println("\n5. Попытка вернуть книгу, которая уже в библиотеке:")
+	err = myLibrary.ReturnBook(1)
+	if err != nil {
+		fmt.Printf("Ошибка возврата книги: %v\n", err)
+	} else {
+		fmt.Println("Книга успешно возвращена")
+	}
+
+	fmt.Println("\n6. Выдача и возврат другой книги:")
+	
+	err = myLibrary.IssueBookToReader(2, 2)
+	if err != nil {
+		fmt.Printf("Ошибка выдачи книги: %v\n", err)
+	} else {
+		fmt.Println("Книга успешно выдана")
+		
+		book, _ := myLibrary.FindBookById(2)
+		if book != nil {
+			fmt.Printf("Статус книги после выдачи: %s\n", book)
+		}
+	}
+	err = myLibrary.ReturnBook(2)
+	if err != nil {
+		fmt.Printf("Ошибка возврата книги: %v\n", err)
+	} else {
+		fmt.Println("Книга успешно возвращена")
+		
+		book, _ := myLibrary.FindBookById(2)
+		if book != nil {
+			fmt.Printf("Статус книги после возврата: %s\n", book)
+		}
+	}
+
+	fmt.Println("\n--- Работа системы завершена ---")
 }

@@ -3,13 +3,13 @@ package main
 import "fmt"
 
 func main() {
-<<<<<<< HEAD
 	fmt.Println("Запуск системы управления библиотекой...")
 
 	myLibrary := &Library{}
 
 	fmt.Println("\n--- Наполняем библиотеку ---")
 	
+
 	reader1, err := myLibrary.AddReader("Тамерлан", "Джигкаев")
 	if err != nil {
 		fmt.Printf("Ошибка при добавлении читателя: %v\n", err)
@@ -47,6 +47,7 @@ func main() {
 	fmt.Printf("Количество читателей: %d\n", myLibrary.GetReadersCount())
 	fmt.Printf("Количество книг: %d\n", myLibrary.GetBooksCount())
 
+
 	fmt.Println("\n=== СЦЕНАРИИ ИСПОЛЬЗОВАНИЯ ===")
 
 	fmt.Println("\n1. Успешная выдача книги:")
@@ -55,7 +56,7 @@ func main() {
 		fmt.Printf("Ошибка выдачи книги: %v\n", err)
 	} else {
 		fmt.Println("Книга успешно выдана читателю")
-
+		
 		book, _ := myLibrary.FindBookById(1)
 		if book != nil {
 			fmt.Printf("Статус книги после выдачи: %s\n", book)
@@ -68,8 +69,9 @@ func main() {
 		fmt.Printf("Ошибка выдачи книги: %v\n", err)
 	} else {
 		fmt.Println("Книга успешно выдана")
-	}
 
+
+	}
 	fmt.Println("\n3. Попытка выдать книгу несуществующему читателю:")
 	err = myLibrary.IssueBookToReader(2, 999)
 	if err != nil {
@@ -77,6 +79,7 @@ func main() {
 	} else {
 		fmt.Println("Книга успешно выдана")
 	}
+
 	fmt.Println("\n4. Успешный возврат книги:")
 	err = myLibrary.ReturnBook(1)
 	if err != nil {
@@ -99,7 +102,6 @@ func main() {
 	}
 
 	fmt.Println("\n6. Выдача и возврат другой книги:")
-	
 	err = myLibrary.IssueBookToReader(2, 2)
 	if err != nil {
 		fmt.Printf("Ошибка выдачи книги: %v\n", err)
@@ -111,6 +113,7 @@ func main() {
 			fmt.Printf("Статус книги после выдачи: %s\n", book)
 		}
 	}
+
 	err = myLibrary.ReturnBook(2)
 	if err != nil {
 		fmt.Printf("Ошибка возврата книги: %v\n", err)
@@ -125,37 +128,3 @@ func main() {
 
 	fmt.Println("\n--- Работа системы завершена ---")
 }
-=======
-	user1 := Reader{
-		ID:        1,
-		FirstName: "Агунда",
-		LastName:  "Кокойты",
-		IsActive:  true,
-	}
-
-	book1 := Book{
-		ID:       1,
-		Year:     1867,
-		Title:    "Война и мир",
-		Author:   "Лев Толстой",
-		IsIssued: false,
-	}
-	fmt.Println(user1)
-	fmt.Println(book1)
-	book1.IssueBook(&user1)
-	fmt.Println(book1)
-	book1.ReturnBook()
-	fmt.Println(book1)
-	user1.AssignBook(&book1)
-
-	fmt.Println("------------------------------------")
-
-	n := []Notifier{}
-	em := EmailNotifier{EmailAddress: "tamerlandzigkaev@gmail.com"}
-	sms := SMSNotifier{PhoneNumber: "+79890403016"}
-	n = append(n, em, sms)
-	for i := 0; i < len(n); i++ {
-		n[i].Notify("Ваша книга просрочена!")
-	}
-}
->>>>>>> 80ae632e6f7f7f5f9a16577a6d1e2b302933dab8
